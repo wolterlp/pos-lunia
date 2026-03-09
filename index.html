@@ -13,7 +13,7 @@
   :root { --amber:#F59E0B; --emerald:#10B981; --dark:#0A0F1E; --indigo:#6366F1; }
   *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ height:100%; overflow:hidden; background:var(--dark); color:#F1F5F9; font-family:'Inter',sans-serif; }
-  h1,h2,h3,h4{ font-family:'Syne',sans-serif; }
+  h1,h2,h3,h4{ font-family:'Lexend',sans-serif; }
 
   /* Grid background */
   body::before{
@@ -27,10 +27,16 @@
   #pres{ position:fixed; inset:0; overflow:hidden; }
   .slide{
     position:absolute; inset:0;
-    display:flex; flex-direction:column; justify-content:center;
-    padding:3rem 2rem 4rem;
+    display:flex; flex-direction:column; justify-content:flex-start;
+    padding: 1rem 1rem 5rem;
     transition:transform .55s cubic-bezier(.77,0,.175,1);
-    overflow:hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Center content on desktop where it fits */
+  @media (min-height: 600px) {
+    .slide { justify-content:center; }
   }
   .slide[data-state="before"]{ transform:translateX(-100%); }
   .slide[data-state="active"] { transform:translateX(0); }
@@ -65,11 +71,11 @@
   .sn{
     width:34px; height:34px; border-radius:50%; background:var(--indigo);
     display:flex; align-items:center; justify-content:center;
-    font-weight:800; font-size:.85rem; flex-shrink:0; font-family:'Syne',sans-serif;
+    font-weight:800; font-size:.85rem; flex-shrink:0; font-family:'Lexend',sans-serif;
   }
 
   /* ── CHART ── */
-  .chart-box{ position:relative; width:100%; height:160px; }
+  .chart-box{ position:relative; width:100%; height:140px; }
 
   /* ── PROGRESS BAR ── */
   .bar-track{ flex:1; background:rgba(255,255,255,.1); border-radius:9999px; height:8px; overflow:hidden; }
@@ -78,9 +84,9 @@
   /* ── NAVIGATION ── */
   #nav-bar{
     position:fixed; bottom:0; left:0; right:0; z-index:100;
-    display:flex; align-items:center; justify-content:center; gap:1.5rem;
-    padding:.9rem 1rem;
-    background:linear-gradient(transparent, rgba(10,15,30,.95));
+    display:flex; align-items:center; justify-content:center; gap:1rem;
+    padding:.7rem .75rem;
+    background:linear-gradient(transparent, rgba(10,15,30,.98));
   }
   #nav-prev, #nav-next{
     width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.15);
@@ -90,16 +96,16 @@
   }
   #nav-prev:hover, #nav-next:hover{ background:var(--indigo); border-color:var(--indigo); color:#fff; }
   #nav-prev:disabled, #nav-next:disabled{ opacity:.25; cursor:default; }
-  #nav-dots{ display:flex; gap:.5rem; align-items:center; }
+  #nav-dots{ display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; justify-content:center; max-width:200px; }
   .ndot{
     height:6px; border-radius:9999px; background:rgba(255,255,255,.2);
     transition:all .3s; cursor:pointer; border:none;
   }
   .ndot.on{ background:var(--amber); width:22px; }
   .ndot:not(.on){ width:6px; }
-  #nav-counter{ font-size:.7rem; color:#475569; min-width:32px; text-align:center; }
+  #nav-counter{ font-size:.7rem; color:#475569; min-width:36px; text-align:center; flex-shrink:0; }
 
-  /* ── SIDE DOTS (desktop) ── */
+  /* ── SIDE DOTS (desktop only) ── */
   #side-dots{
     position:fixed; right:1.2rem; top:50%; transform:translateY(-50%);
     display:flex; flex-direction:column; gap:.55rem; z-index:100;
@@ -112,6 +118,74 @@
 
   @keyframes pulse-g{ 0%,100%{opacity:1} 50%{opacity:.45} }
   .pulse{ animation:pulse-g 2s infinite; }
+
+  /* ══════════════════════════════
+     RESPONSIVE — MOBILE FIRST
+  ══════════════════════════════ */
+
+  /* Hide side dots on small screens */
+  @media (max-width: 640px) {
+    #side-dots { display:none; }
+
+    .slide {
+      padding: .75rem .75rem 5rem;
+    }
+
+    /* Hero title */
+    h1.text-6xl { font-size: 2.8rem !important; }
+
+    /* Section headings */
+    h2.text-4xl, h2.text-3xl { font-size: 1.5rem !important; line-height:1.2; }
+    h3.text-2xl, h3.text-xl  { font-size: 1.1rem !important; }
+    h3.text-lg               { font-size: 1rem !important; }
+
+    /* All 2-col grids → 1 col */
+    .grid-cols-2 { grid-template-columns: 1fr !important; }
+
+    /* All 3-col grids → 1 col */
+    .grid-cols-3 { grid-template-columns: 1fr !important; }
+
+    /* All 4-col grids → 2 col */
+    .grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+
+    /* Reduce gaps */
+    .gap-8 { gap: 1rem !important; }
+    .gap-6 { gap: .75rem !important; }
+    .gap-5 { gap: .6rem !important; }
+    .gap-4 { gap: .5rem !important; }
+
+    /* Padding reductions */
+    .p-6 { padding: .75rem !important; }
+    .p-8 { padding: 1rem !important; }
+    .p-5 { padding: .75rem !important; }
+
+    /* Margin reductions */
+    .mb-8 { margin-bottom: .75rem !important; }
+    .mb-6 { margin-bottom: .6rem !important; }
+    .mb-5 { margin-bottom: .5rem !important; }
+
+    /* max-w overrides so content uses full width */
+    .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl { max-width: 100% !important; }
+
+    /* Pills wrap tighter */
+    .pill { font-size: .65rem; padding: .2rem .55rem; }
+
+    /* Chart shorter on mobile */
+    .chart-box { height: 110px; }
+
+    /* Contact slide quote */
+    h2.text-4xl.italic { font-size: 1.3rem !important; }
+  }
+
+  /* Medium tablets */
+  @media (min-width: 641px) and (max-width: 900px) {
+    #side-dots { display:none; }
+    .grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+    .grid-cols-3 { grid-template-columns: repeat(2, 1fr) !important; }
+    h1.text-6xl  { font-size: 4rem !important; }
+    .max-w-6xl, .max-w-5xl { max-width: 100% !important; }
+    .slide { padding: 1.5rem 1.25rem 5rem; }
+  }
 </style>
 </head>
 <body>
@@ -124,7 +198,7 @@
 <!-- ▸ SLIDE 1 · HERO ◂ -->
 <div class="slide" data-state="active" data-label="Inicio">
   <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-950 to-amber-950/20 -z-10"></div>
-  <div class="absolute top-16 right-16 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl -z-10"></div>
+  <div class="absolute top-16 right-4 md:right-16 w-48 md:w-80 h-48 md:h-80 bg-indigo-600/10 rounded-full blur-3xl -z-10"></div>
   <div class="max-w-4xl mx-auto text-center w-full">
     <div class="tag border border-amber-500/30 bg-amber-500/10 text-amber-400">Sistema Integral de Gestión para Negocios</div>
     <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-2">
@@ -158,7 +232,7 @@
 <div class="slide" data-state="after" data-label="El Problema">
   <div class="absolute inset-0 bg-slate-950/60 -z-10"></div>
   <div class="max-w-6xl mx-auto w-full">
-    <div class="grid grid-cols-2 gap-8 items-start">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
       <!-- Izquierda: El Problema -->
       <div>
         <div class="tag border border-red-500/30 bg-red-500/10 text-red-400">El Problema</div>
@@ -220,8 +294,8 @@
   <div class="max-w-5xl mx-auto w-full text-center">
     <div class="tag border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">La Solución</div>
     <h2 class="text-4xl font-extrabold mb-2">Un Sistema que <span class="text-emerald-400">Controla Todo</span></h2>
-    <p class="text-sm text-slate-400 mb-8 max-w-xl mx-auto">POS-LunIA integra cada parte de su negocio en una sola plataforma, eliminando errores y multiplicando su eficiencia.</p>
-    <div class="grid grid-cols-4 gap-5 mb-8">
+    <p class="text-sm text-slate-400 mb-5 max-w-xl mx-auto">POS-LunIA integra cada parte de su negocio en una sola plataforma, eliminando errores y multiplicando su eficiencia.</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <div class="p-6 gc hover:-translate-y-1 transition-all gc-e">
         <div class="text-4xl mb-3">🍽️</div>
         <h3 class="text-lg font-bold mb-1">Operación Total</h3>
@@ -253,7 +327,7 @@
 <div class="slide" data-state="after" data-label="Domicilios">
   <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-indigo-950/30 to-transparent -z-10"></div>
   <div class="max-w-6xl mx-auto w-full">
-    <div class="grid grid-cols-2 gap-8 items-start">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
       <!-- Izquierda: Domicilios -->
       <div>
         <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Gestión de Pedidos</div>
@@ -298,7 +372,7 @@
         </ul>
         <div class="border-t border-slate-700/60 pt-3">
           <div class="flex items-center gap-2 mb-2"><span class="text-lg">🏪</span><span class="font-bold text-sm text-emerald-400">Múltiples Estaciones</span></div>
-          <div class="grid grid-cols-4 gap-1.5 text-xs">
+          <div class="grid grid-cols-2 gap-1.5 text-xs">
             <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-amber-500/30"><div class="text-lg">🥩</div><span class="text-slate-300">Asados</span></div>
             <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-blue-500/30"><div class="text-lg">🐟</div><span class="text-slate-300">Mariscos</span></div>
             <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-amber-800/40"><div class="text-lg">☕</div><span class="text-slate-300">Barista</span></div>
@@ -318,7 +392,7 @@
       <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Informes e Inteligencia · 1/3</div>
       <h2 class="text-3xl font-extrabold">Decisiones con <span class="text-indigo-400">Datos</span>, No con Suposiciones</h2>
     </div>
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Semáforo -->
       <div class="gc p-5 border-t-4 border-emerald-500">
         <div class="flex items-center gap-3 mb-3"><span class="text-3xl">🚦</span><h3 class="text-lg font-bold text-emerald-400">Semáforo de Tiempos</h3></div>
@@ -379,7 +453,7 @@
       <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Informes e Inteligencia · 2/3</div>
       <h2 class="text-3xl font-extrabold">Decisiones con <span class="text-indigo-400">Datos</span>, No con Suposiciones</h2>
     </div>
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Días Movidos -->
       <div class="gc p-5 border-t-4 border-indigo-500">
         <div class="flex items-center gap-3 mb-3"><span class="text-3xl">📆</span><h3 class="text-lg font-bold text-indigo-400">Días Más Movidos</h3></div>
@@ -430,7 +504,7 @@
       <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Informes e Inteligencia · 3/3</div>
       <h2 class="text-3xl font-extrabold">Decisiones con <span class="text-indigo-400">Datos</span>, No con Suposiciones</h2>
     </div>
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <!-- Ingresos -->
       <div class="gc p-4">
         <div class="flex items-center gap-2 mb-2"><span class="text-2xl">💹</span><h3 class="text-base font-bold text-slate-200">Facilidad para Ver Ingresos</h3></div>
@@ -469,7 +543,7 @@
       <h2 class="text-3xl font-extrabold mb-1">Cero Sorpresas, <span class="text-emerald-400">Cero Pérdidas</span></h2>
       <p class="text-sm text-slate-400 max-w-lg mx-auto">Unimos la caja con el almacén para que cada centavo y producto sea rastreable en todo momento.</p>
     </div>
-    <div class="grid grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Métodos de Pago -->
       <div class="gc p-5 border-t-4 border-amber-500 gc-a">
         <div class="text-3xl mb-3">💳</div>
@@ -521,13 +595,13 @@
         <p class="text-xl font-bold text-white">Walter Restrepo López</p>
         <div class="flex items-center justify-center gap-2 text-amber-400 font-semibold">
           <span>✉️</span>
-          <a href="mailto:ey.lunia@hotmail.com" class="hover:text-amber-300 transition-colors">ey.lunia@hotmail.com</a>
+          <a href="/cdn-cgi/l/email-protection#2c495502405942454d6c444358414d4540024f4341" class="hover:text-amber-300 transition-colors"><span class="__cf_email__" data-cfemail="4b2e3265273e25222a0b23243f262a222765282426">[email&#160;protected]</span></a>
         </div>
         <div class="flex items-center justify-center gap-2 text-slate-400">
           <span>📍</span><span>Cali, Valle del Cauca, Colombia</span>
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto text-center mb-6">
+      <div class="grid grid-cols-3 gap-3 max-w-sm mx-auto text-center mb-6">
         <div><div class="text-2xl font-extrabold text-amber-400">20+</div><div class="text-slate-500 text-xs">Funcionalidades</div></div>
         <div><div class="text-2xl font-extrabold text-emerald-400">100%</div><div class="text-slate-500 text-xs">Trazabilidad</div></div>
         <div><div class="text-2xl font-extrabold text-indigo-400">∞</div><div class="text-slate-500 text-xs">Actualizaciones</div></div>
@@ -550,7 +624,7 @@
 <!-- ══ DOTS LATERALES ══ -->
 <div id="side-dots"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 (function(){
   const slides = Array.from(document.querySelectorAll('#pres .slide'));
   const total  = slides.length;
@@ -620,8 +694,8 @@
         responsive:true, maintainAspectRatio:false,
         plugins:{legend:{labels:{color:'#F1F5F9',font:{size:10}}}},
         scales:{
-          y:{beginAtZero:false, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#94A3B8',font:{size:9},callback:v=>'$'+v+'M'}},
-          x:{grid:{display:false}, ticks:{color:'#94A3B8',font:{size:9}}}
+          y:{beginAtZero:true, ticks:{color:'#94A3B8',font:{size:9}}, grid:{color:'rgba(255,255,255,.05)'}},
+          x:{ticks:{color:'#94A3B8',font:{size:9}}, grid:{color:'rgba(255,255,255,.05)'}}
         }
       }
     });
