@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS-LunIA | Presentación</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"-->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+   
+<style>
+  :root { --amber:#F59E0B; --emerald:#10B981; --dark:#0A0F1E; --indigo:#6366F1; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; overflow:hidden; background:var(--dark); color:#F1F5F9; font-family:'Inter',sans-serif; }
+  h1,h2,h3,h4{ font-family:'Syne',sans-serif; }
+
+  /* Grid background */
+  body::before{
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: linear-gradient(rgba(99,102,241,.03) 1px,transparent 1px),
+                      linear-gradient(90deg,rgba(99,102,241,.03) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+
+  /* ── PRESENTATION ENGINE ── */
+  #pres{ position:fixed; inset:0; overflow:hidden; }
+  .slide{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:3rem 2rem 4rem;
+    transition:transform .55s cubic-bezier(.77,0,.175,1);
+    overflow:hidden;
+  }
+  .slide[data-state="before"]{ transform:translateX(-100%); }
+  .slide[data-state="active"] { transform:translateX(0); }
+  .slide[data-state="after"]  { transform:translateX(100%); }
+
+  /* ── GLASS CARD ── */
+  .gc{
+    background:rgba(15,23,42,.78); backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.07); border-radius:1rem;
+  }
+  .gc-a{ box-shadow:0 0 30px rgba(245,158,11,.12); }
+  .gc-e{ box-shadow:0 0 30px rgba(16,185,129,.12); }
+  .gc-i{ box-shadow:0 0 30px rgba(99,102,241,.12); }
+
+  /* ── TAG ── */
+  .tag{
+    display:inline-block; padding:.2rem .9rem; border-radius:9999px;
+    font-size:.65rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    margin-bottom:.6rem;
+  }
+
+  /* ── DOTS / SEMAPH ── */
+  .sdot{ width:16px; height:16px; border-radius:50%; display:inline-block; }
+
+  /* ── NAV PILLS ── */
+  .pill{
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding:.28rem .75rem; border-radius:9999px; font-size:.72rem; font-weight:600; border:1px solid;
+  }
+
+  /* ── STEP NODE ── */
+  .sn{
+    width:34px; height:34px; border-radius:50%; background:var(--indigo);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:.85rem; flex-shrink:0; font-family:'Syne',sans-serif;
+  }
+
+  /* ── CHART ── */
+  .chart-box{ position:relative; width:100%; height:160px; }
+
+  /* ── PROGRESS BAR ── */
+  .bar-track{ flex:1; background:rgba(255,255,255,.1); border-radius:9999px; height:8px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:9999px; }
+
+  /* ── NAVIGATION ── */
+  #nav-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:center; gap:1.5rem;
+    padding:.9rem 1rem;
+    background:linear-gradient(transparent, rgba(10,15,30,.95));
+  }
+  #nav-prev, #nav-next{
+    width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.15);
+    background:rgba(15,23,42,.8); color:#94A3B8;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem; cursor:pointer; transition:all .2s; flex-shrink:0;
+  }
+  #nav-prev:hover, #nav-next:hover{ background:var(--indigo); border-color:var(--indigo); color:#fff; }
+  #nav-prev:disabled, #nav-next:disabled{ opacity:.25; cursor:default; }
+  #nav-dots{ display:flex; gap:.5rem; align-items:center; }
+  .ndot{
+    height:6px; border-radius:9999px; background:rgba(255,255,255,.2);
+    transition:all .3s; cursor:pointer; border:none;
+  }
+  .ndot.on{ background:var(--amber); width:22px; }
+  .ndot:not(.on){ width:6px; }
+  #nav-counter{ font-size:.7rem; color:#475569; min-width:32px; text-align:center; }
+
+  /* ── SIDE DOTS (desktop) ── */
+  #side-dots{
+    position:fixed; right:1.2rem; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:.55rem; z-index:100;
+  }
+  .sdot-side{
+    width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.15);
+    cursor:pointer; transition:all .3s; border:none;
+  }
+  .sdot-side.on{ background:var(--amber); transform:scale(1.4); box-shadow:0 0 8px var(--amber); }
+
+  @keyframes pulse-g{ 0%,100%{opacity:1} 50%{opacity:.45} }
+  .pulse{ animation:pulse-g 2s infinite; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     PRESENTATION
+══════════════════════════════ -->
+<div id="pres">
+
+<!-- ▸ SLIDE 1 · HERO ◂ -->
+<div class="slide" data-state="active" data-label="Inicio">
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-950 to-amber-950/20 -z-10"></div>
+  <div class="absolute top-16 right-16 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl -z-10"></div>
+  <div class="max-w-4xl mx-auto text-center w-full">
+    <div class="tag border border-amber-500/30 bg-amber-500/10 text-amber-400">Sistema Integral de Gestión para Negocios</div>
+    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-2">
+      POS-<span class="text-amber-500">LunIA</span>
+    </h1>
+    <div class="h-px w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto my-3"></div>
+    <p class="text-xl font-light text-slate-300 italic mb-3">"Transformamos empresas, no solo procesos"</p>
+    <p class="text-sm text-slate-400 mb-5 max-w-xl mx-auto">
+      Control total en tiempo real. +20 funcionalidades para eliminar pérdidas y potenciar sus decisiones.
+    </p>
+    <div class="flex flex-wrap justify-center gap-1.5 mb-5">
+      <span class="pill border-amber-500/30 text-amber-400 bg-amber-500/10">🧾 Pagos Divididos</span>
+      <span class="pill border-indigo-500/30 text-indigo-400 bg-indigo-500/10">📅 Jornadas</span>
+      <span class="pill border-emerald-500/30 text-emerald-400 bg-emerald-500/10">🏪 Estaciones</span>
+      <span class="pill border-rose-500/30 text-rose-400 bg-rose-500/10">🚦 Semáforo</span>
+      <span class="pill border-amber-500/30 text-amber-300 bg-amber-500/10">🕐 Horas Pico</span>
+      <span class="pill border-purple-500/30 text-purple-400 bg-purple-500/10">📆 Días Movidos</span>
+      <span class="pill border-slate-500/30 text-slate-300 bg-slate-500/10">🐢 Platos Lentos</span>
+      <span class="pill border-emerald-500/30 text-emerald-300 bg-emerald-500/10">📈 Resumen Económico</span>
+      <span class="pill border-indigo-500/30 text-indigo-300 bg-indigo-500/10">🛵 Domicilios</span>
+      <span class="pill border-amber-500/30 text-amber-200 bg-amber-500/10">💳 Métodos de Pago</span>
+      <span class="pill border-emerald-500/30 text-emerald-200 bg-emerald-500/10">📦 Inventario</span>
+      <span class="pill border-pink-500/30 text-pink-300 bg-pink-500/10">🎨 Gestión Platillos</span>
+      <span class="pill border-slate-400/30 text-slate-300 bg-slate-500/10">🔄 Actualizaciones</span>
+    </div>
+    <p class="text-xs text-slate-500">Presentado por <span class="text-white font-semibold">Walter Restrepo López</span></p>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 2 · EL PROBLEMA + VENTAS ◂ -->
+<div class="slide" data-state="after" data-label="El Problema">
+  <div class="absolute inset-0 bg-slate-950/60 -z-10"></div>
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid grid-cols-2 gap-8 items-start">
+      <!-- Izquierda: El Problema -->
+      <div>
+        <div class="tag border border-red-500/30 bg-red-500/10 text-red-400">El Problema</div>
+        <h2 class="text-3xl font-extrabold mb-2">El Costo <span class="text-red-500">Invisible</span><br>de la Desorganización</h2>
+        <p class="text-sm text-slate-400 mb-4">La falta de un sistema integral drena sus ganancias silenciosamente cada día.</p>
+        <div class="space-y-2.5">
+          <div class="flex items-start gap-3 p-3 gc">
+            <span class="text-xl">❌</span>
+            <div><p class="font-bold text-sm text-white">Descuadres de Caja</p><p class="text-xs text-slate-400">Dinero que falta sin explicación al final del turno.</p></div>
+          </div>
+          <div class="flex items-start gap-3 p-3 gc">
+            <span class="text-xl">⚠️</span>
+            <div><p class="font-bold text-sm text-white">Cuentas Separadas = Caos</p><p class="text-xs text-slate-400">Tiempo perdido y errores al dividir la facturación.</p></div>
+          </div>
+          <div class="flex items-start gap-3 p-3 gc">
+            <span class="text-xl">🔀</span>
+            <div><p class="font-bold text-sm text-white">Cocinas sin Coordinación</p><p class="text-xs text-slate-400">Sin estaciones, los pedidos se mezclan y generan caos.</p></div>
+          </div>
+          <div class="flex items-start gap-3 p-3 gc">
+            <span class="text-xl">🕵️</span>
+            <div><p class="font-bold text-sm text-white">Decisiones a Ciegas</p><p class="text-xs text-slate-400">Sin datos de horas pico o platos lentos, imposible planificar.</p></div>
+          </div>
+        </div>
+      </div>
+      <!-- Derecha: Módulo de Ventas -->
+      <div>
+        <div class="tag border border-amber-500/30 bg-amber-500/10 text-amber-400">Módulo de Ventas</div>
+        <h3 class="text-2xl font-extrabold mb-1 text-white">Ventas que <span class="text-amber-400">No Fallan</span></h3>
+        <p class="text-xs text-slate-400 mb-3">Desde dividir una cuenta hasta manejar múltiples cocinas — todo bajo control.</p>
+        <!-- Pagos Divididos -->
+        <div class="gc p-4 border-t-4 border-amber-500 mb-3">
+          <div class="flex items-center gap-2 mb-2"><span class="text-2xl">🧾</span><h4 class="font-bold text-amber-400">Pagos Divididos</h4></div>
+          <p class="text-xs text-slate-400 mb-3">Divide los productos de una cuenta automáticamente, sin recalcular ni generar facturas dobles.</p>
+          <div class="bg-slate-800/60 rounded-lg p-2.5 space-y-1.5 text-xs">
+            <div class="flex justify-between"><span class="text-slate-300">Mesa 8 — Total</span><span class="font-bold text-amber-400">$180.000</span></div>
+            <div class="flex justify-between text-slate-400"><span>→ Pedro (Hamburguesa + Cerveza)</span><span class="text-emerald-400 font-semibold">$65.000 ✓</span></div>
+            <div class="flex justify-between text-slate-400"><span>→ Laura (Pizza + Jugo)</span><span class="text-emerald-400 font-semibold">$72.000 ✓</span></div>
+            <div class="flex justify-between text-slate-400"><span>→ Carlos (Ensalada)</span><span class="text-yellow-400 font-semibold">$43.000 ⏳</span></div>
+          </div>
+        </div>
+        <!-- Jornadas -->
+        <div class="gc p-4 border-t-4 border-indigo-500">
+          <div class="flex items-center gap-2 mb-2"><span class="text-2xl">📅</span><h4 class="font-bold text-indigo-400">Manejo de Jornadas</h4></div>
+          <p class="text-xs text-slate-400 mb-3">Las jornadas pueden abarcar dos días. Informes generados por jornada, no solo por fecha.</p>
+          <div class="space-y-1.5 text-xs">
+            <div class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-lg"><span class="text-indigo-400">🕙</span><span class="text-slate-300">Jornada Diurna: 8am – 4pm</span></div>
+            <div class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-lg"><span class="text-purple-400">🌙</span><span class="text-slate-300">Jornada Nocturna: 6pm – 2am+1</span></div>
+            <div class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-lg"><span class="text-amber-400">📋</span><span class="text-slate-300">Informe separado por cada jornada</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 3 · LA SOLUCIÓN ◂ -->
+<div class="slide" data-state="after" data-label="La Solución">
+  <div class="absolute inset-0 bg-gradient-to-br from-emerald-950/20 via-slate-950 to-indigo-950/20 -z-10"></div>
+  <div class="max-w-5xl mx-auto w-full text-center">
+    <div class="tag border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">La Solución</div>
+    <h2 class="text-4xl font-extrabold mb-2">Un Sistema que <span class="text-emerald-400">Controla Todo</span></h2>
+    <p class="text-sm text-slate-400 mb-8 max-w-xl mx-auto">POS-LunIA integra cada parte de su negocio en una sola plataforma, eliminando errores y multiplicando su eficiencia.</p>
+    <div class="grid grid-cols-4 gap-5 mb-8">
+      <div class="p-6 gc hover:-translate-y-1 transition-all gc-e">
+        <div class="text-4xl mb-3">🍽️</div>
+        <h3 class="text-lg font-bold mb-1">Operación Total</h3>
+        <p class="text-slate-400 text-xs">Mesas, Cocina, Estaciones y Domicilios sincronizados al segundo.</p>
+      </div>
+      <div class="p-6 gc hover:-translate-y-1 transition-all gc-a">
+        <div class="text-4xl mb-3">💰</div>
+        <h3 class="text-lg font-bold mb-1">Control Financiero</h3>
+        <p class="text-slate-400 text-xs">Caja, inventario y pagos vinculados a cada venta realizada.</p>
+      </div>
+      <div class="p-6 gc hover:-translate-y-1 transition-all gc-i">
+        <div class="text-4xl mb-3">📊</div>
+        <h3 class="text-lg font-bold mb-1">Inteligencia de Negocio</h3>
+        <p class="text-slate-400 text-xs">Informes, semáforo de tiempos, horas pico y días más movidos.</p>
+      </div>
+      <div class="p-6 gc hover:-translate-y-1 transition-all">
+        <div class="text-4xl mb-3">🔄</div>
+        <h3 class="text-lg font-bold mb-1">Siempre Actualizado</h3>
+        <p class="text-slate-400 text-xs">Un sistema que evoluciona con su negocio, nunca queda obsoleto.</p>
+      </div>
+    </div>
+    <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl inline-block max-w-xl">
+      <p class="text-base font-semibold text-emerald-300 italic">"Conectamos la intención del cliente con la realidad de su operación."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 4 · DOMICILIOS + COCINA ◂ -->
+<div class="slide" data-state="after" data-label="Domicilios">
+  <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-indigo-950/30 to-transparent -z-10"></div>
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="grid grid-cols-2 gap-8 items-start">
+      <!-- Izquierda: Domicilios -->
+      <div>
+        <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Gestión de Pedidos</div>
+        <h2 class="text-3xl font-extrabold mb-2">Domicilios <span class="text-indigo-400">Bajo Control</span></h2>
+        <p class="text-sm text-slate-400 mb-4">El sistema sabe exactamente qué dinero salió y si fue entregado en caja.</p>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-3 gc">
+            <div class="sn bg-indigo-600 text-sm">🏠</div>
+            <div><p class="font-bold text-sm">Domiciliario Propio</p><p class="text-xs text-slate-400">Registra el pedido, asigna el empleado y controla si el efectivo fue entregado al regresar.</p></div>
+          </div>
+          <div class="flex items-start gap-3 p-3 gc">
+            <div class="sn bg-purple-600 text-sm">🛵</div>
+            <div><p class="font-bold text-sm">Domiciliario Independiente</p><p class="text-xs text-slate-400">Registro claro de entregas y pagos pendientes vs. cobrados.</p></div>
+          </div>
+          <div class="flex items-start gap-3 p-3 gc">
+            <div class="sn bg-amber-500 text-slate-900 text-sm">💵</div>
+            <div><p class="font-bold text-sm">Pago Contra Entrega</p><p class="text-xs text-slate-400">Distingue si el cobro fue realizado o está pendiente, evitando pérdidas en tránsito.</p></div>
+          </div>
+        </div>
+      </div>
+      <!-- Derecha: Cocina y Servicio -->
+      <div class="gc p-5 gc-i">
+        <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Cocina y Servicio</div>
+        <h3 class="text-xl font-extrabold mb-4 text-white">Cocina y Servicio en <span class="text-indigo-400">Armonía</span></h3>
+        <ul class="space-y-3 mb-4">
+          <li class="flex items-start gap-3">
+            <div class="sn shrink-0">1</div>
+            <div><p class="font-bold text-sm">Comunicación Digital Directa</p><p class="text-xs text-slate-400">Las órdenes viajan digitalmente con notas personalizadas a cada estación.</p></div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="sn bg-emerald-600 shrink-0">2</div>
+            <div><p class="font-bold text-sm">Estaciones Independientes</p><p class="text-xs text-slate-400">Cada área ve solo lo suyo. Máxima concentración, mínimos errores.</p></div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="sn bg-amber-500 text-slate-900 shrink-0">3</div>
+            <div><p class="font-bold text-sm">Mayor Rotación de Mesas</p><p class="text-xs text-slate-400">Velocidad en preparación = más rotación = más ventas.</p></div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="sn bg-rose-600 shrink-0">4</div>
+            <div><p class="font-bold text-sm">Gestión de Mesas</p><p class="text-xs text-slate-400">Estado en tiempo real: libre, ocupada, esperando servicio o lista para cobrar.</p></div>
+          </li>
+        </ul>
+        <div class="border-t border-slate-700/60 pt-3">
+          <div class="flex items-center gap-2 mb-2"><span class="text-lg">🏪</span><span class="font-bold text-sm text-emerald-400">Múltiples Estaciones</span></div>
+          <div class="grid grid-cols-4 gap-1.5 text-xs">
+            <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-amber-500/30"><div class="text-lg">🥩</div><span class="text-slate-300">Asados</span></div>
+            <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-blue-500/30"><div class="text-lg">🐟</div><span class="text-slate-300">Mariscos</span></div>
+            <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-amber-800/40"><div class="text-lg">☕</div><span class="text-slate-300">Barista</span></div>
+            <div class="bg-slate-800/60 rounded-lg p-2 text-center border border-emerald-500/30"><div class="text-lg">🍹</div><span class="text-slate-300">Bar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 5 · INFORMES 1: Semáforo + Horas Pico ◂ -->
+<div class="slide" data-state="after" data-label="Informes I">
+  <div class="absolute left-0 top-0 w-1/3 h-full bg-gradient-to-r from-indigo-950/30 to-transparent -z-10"></div>
+  <div class="max-w-5xl mx-auto w-full">
+    <div class="text-center mb-6">
+      <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Informes e Inteligencia · 1/3</div>
+      <h2 class="text-3xl font-extrabold">Decisiones con <span class="text-indigo-400">Datos</span>, No con Suposiciones</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Semáforo -->
+      <div class="gc p-5 border-t-4 border-emerald-500">
+        <div class="flex items-center gap-3 mb-3"><span class="text-3xl">🚦</span><h3 class="text-lg font-bold text-emerald-400">Semáforo de Tiempos</h3></div>
+        <p class="text-xs text-slate-400 mb-4">Mida el tiempo de preparación por estación en tiempo real. Identifique cuellos de botella.</p>
+        <div class="space-y-2.5">
+          <div class="flex justify-between items-center p-2.5 bg-slate-800/60 rounded-lg">
+            <span class="text-slate-300 text-sm">Asados</span>
+            <div class="flex items-center gap-2"><span class="text-emerald-400 text-xs">12 min</span><span class="sdot bg-emerald-400"></span></div>
+          </div>
+          <div class="flex justify-between items-center p-2.5 bg-slate-800/60 rounded-lg">
+            <span class="text-slate-300 text-sm">Mariscos</span>
+            <div class="flex items-center gap-2"><span class="text-yellow-400 text-xs">22 min</span><span class="sdot bg-yellow-400"></span></div>
+          </div>
+          <div class="flex justify-between items-center p-2.5 bg-slate-800/60 rounded-lg">
+            <span class="text-slate-300 text-sm">Bar</span>
+            <div class="flex items-center gap-2"><span class="text-red-400 text-xs">35 min ⚠️</span><span class="sdot bg-red-400 pulse"></span></div>
+          </div>
+        </div>
+        <p class="mt-3 text-xs text-slate-500">Cada punto de color indica el nivel de alerta según el umbral configurado.</p>
+      </div>
+      <!-- Horas Pico -->
+      <div class="gc p-5 border-t-4 border-amber-500">
+        <div class="flex items-center gap-3 mb-3"><span class="text-3xl">🕐</span><h3 class="text-lg font-bold text-amber-400">Horas Pico</h3></div>
+        <p class="text-xs text-slate-400 mb-4">Identifica las horas donde más se vende para preparar el equipo con anticipación.</p>
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400 text-xs w-14">12–1pm</span>
+            <div class="bar-track"><div class="bar-fill bg-amber-500" style="width:85%"></div></div>
+            <span class="text-amber-400 font-bold text-xs w-8">85%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400 text-xs w-14">7–9pm</span>
+            <div class="bar-track"><div class="bar-fill bg-amber-500" style="width:100%"></div></div>
+            <span class="text-amber-400 font-bold text-xs w-8">🔥</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400 text-xs w-14">3–5pm</span>
+            <div class="bar-track"><div class="bar-fill bg-indigo-500" style="width:30%"></div></div>
+            <span class="text-indigo-400 font-bold text-xs w-8">30%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400 text-xs w-14">10–12am</span>
+            <div class="bar-track"><div class="bar-fill bg-slate-500" style="width:15%"></div></div>
+            <span class="text-slate-400 font-bold text-xs w-8">15%</span>
+          </div>
+        </div>
+        <p class="mt-3 text-xs text-slate-500">Análisis basado en datos históricos reales del negocio.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 6 · INFORMES 2: Días + Platos ◂ -->
+<div class="slide" data-state="after" data-label="Informes II">
+  <div class="absolute left-0 top-0 w-1/3 h-full bg-gradient-to-r from-indigo-950/30 to-transparent -z-10"></div>
+  <div class="max-w-5xl mx-auto w-full">
+    <div class="text-center mb-6">
+      <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Informes e Inteligencia · 2/3</div>
+      <h2 class="text-3xl font-extrabold">Decisiones con <span class="text-indigo-400">Datos</span>, No con Suposiciones</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-6">
+      <!-- Días Movidos -->
+      <div class="gc p-5 border-t-4 border-indigo-500">
+        <div class="flex items-center gap-3 mb-3"><span class="text-3xl">📆</span><h3 class="text-lg font-bold text-indigo-400">Días Más Movidos</h3></div>
+        <p class="text-xs text-slate-400 mb-4">Identifique los días con mayor movimiento para planificar personal, compras y promociones.</p>
+        <div class="grid grid-cols-7 gap-1.5 text-center text-xs">
+          <div><div class="text-slate-500 mb-1">L</div><div class="bg-slate-700 rounded p-2 text-slate-400">😐</div></div>
+          <div><div class="text-slate-500 mb-1">M</div><div class="bg-slate-700 rounded p-2 text-slate-400">😐</div></div>
+          <div><div class="text-slate-500 mb-1">X</div><div class="bg-indigo-600 rounded p-2">🙂</div></div>
+          <div><div class="text-slate-500 mb-1">J</div><div class="bg-indigo-700 rounded p-2">😊</div></div>
+          <div><div class="text-slate-500 mb-1">V</div><div class="bg-amber-600 rounded p-2">🔥</div></div>
+          <div><div class="text-slate-500 mb-1">S</div><div class="bg-amber-500 rounded p-2 font-bold">🔥</div></div>
+          <div><div class="text-slate-500 mb-1">D</div><div class="bg-amber-600 rounded p-2">🔥</div></div>
+        </div>
+        <div class="mt-4 flex gap-3 text-xs text-slate-500">
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-amber-500 inline-block"></span> Alta demanda</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-indigo-600 inline-block"></span> Media</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-slate-700 inline-block"></span> Baja</span>
+        </div>
+      </div>
+      <!-- Platos Lentos -->
+      <div class="gc p-5 border-t-4 border-rose-500">
+        <div class="flex items-center gap-3 mb-3"><span class="text-3xl">🐢</span><h3 class="text-lg font-bold text-rose-400">Platos Más Lentos</h3></div>
+        <p class="text-xs text-slate-400 mb-4">Items con mayor tiempo de preparación. Informar al cliente con anticipación o revisar la eficiencia operativa.</p>
+        <div class="space-y-2.5">
+          <div class="flex justify-between items-center p-3 bg-slate-800/60 rounded-lg">
+            <span class="text-slate-300 text-sm">Costillas BBQ completas</span>
+            <span class="text-red-400 font-bold text-sm">45 min</span>
+          </div>
+          <div class="flex justify-between items-center p-3 bg-slate-800/60 rounded-lg">
+            <span class="text-slate-300 text-sm">Bandeja paisa especial</span>
+            <span class="text-yellow-400 font-bold text-sm">32 min</span>
+          </div>
+          <div class="flex justify-between items-center p-3 bg-slate-800/60 rounded-lg">
+            <span class="text-slate-300 text-sm">Cazuela de mariscos</span>
+            <span class="text-yellow-400 font-bold text-sm">28 min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 7 · INFORMES 3: Ingresos + Jornada + Resumen ◂ -->
+<div class="slide" data-state="after" data-label="Informes III">
+  <div class="absolute left-0 top-0 w-1/3 h-full bg-gradient-to-r from-indigo-950/30 to-transparent -z-10"></div>
+  <div class="max-w-5xl mx-auto w-full">
+    <div class="text-center mb-5">
+      <div class="tag border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">Informes e Inteligencia · 3/3</div>
+      <h2 class="text-3xl font-extrabold">Decisiones con <span class="text-indigo-400">Datos</span>, No con Suposiciones</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <!-- Ingresos -->
+      <div class="gc p-4">
+        <div class="flex items-center gap-2 mb-2"><span class="text-2xl">💹</span><h3 class="text-base font-bold text-slate-200">Facilidad para Ver Ingresos</h3></div>
+        <p class="text-xs text-slate-400 mb-3">Resumen claro de ingresos del día, semana o mes. Sin hojas de cálculo ni cálculos manuales.</p>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between p-2 bg-slate-800/60 rounded-lg"><span class="text-slate-400">Hoy</span><span class="text-emerald-400 font-bold">$1.240.000</span></div>
+          <div class="flex justify-between p-2 bg-slate-800/60 rounded-lg"><span class="text-slate-400">Esta semana</span><span class="text-emerald-400 font-bold">$6.870.000</span></div>
+          <div class="flex justify-between p-2 bg-slate-800/60 rounded-lg"><span class="text-slate-400">Este mes</span><span class="text-emerald-400 font-bold">$24.300.000</span></div>
+        </div>
+      </div>
+      <!-- Jornada -->
+      <div class="gc p-4">
+        <div class="flex items-center gap-2 mb-2"><span class="text-2xl">🎯</span><h3 class="text-base font-bold text-slate-200">Informe de Ventas por Jornada</h3></div>
+        <p class="text-xs text-slate-400 mb-3">Cada jornada genera su cierre con totales por método de pago, estación y vendedor.</p>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-lg"><span class="text-indigo-400">🕙</span><span class="text-slate-300 flex-1">Jornada Diurna</span><span class="text-amber-400 font-bold">$890.000</span></div>
+          <div class="flex items-center gap-2 p-2 bg-slate-800/60 rounded-lg"><span class="text-purple-400">🌙</span><span class="text-slate-300 flex-1">Jornada Nocturna</span><span class="text-amber-400 font-bold">$1.350.000</span></div>
+          <div class="flex items-center gap-2 p-2 bg-indigo-900/40 border border-indigo-500/30 rounded-lg"><span class="text-emerald-400">📋</span><span class="text-slate-300 flex-1">Total consolidado</span><span class="text-emerald-400 font-bold">$2.240.000</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Resumen Económico -->
+    <div class="gc p-4 border-t-4 border-emerald-500">
+      <div class="flex items-center gap-2 mb-1"><span class="text-2xl">📈</span><h3 class="text-base font-bold text-emerald-400">Resumen Económico Comparativo</h3></div>
+      <p class="text-xs text-slate-400 mb-2">Compare ventas por semana, mes o año para tomar decisiones estratégicas a tiempo.</p>
+      <div class="chart-box"><canvas id="econChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 8 · CAJA E INVENTARIO ◂ -->
+<div class="slide" data-state="after" data-label="Caja">
+  <div class="max-w-5xl mx-auto w-full">
+    <div class="text-center mb-6">
+      <div class="tag border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">Caja, Pagos e Inventario</div>
+      <h2 class="text-3xl font-extrabold mb-1">Cero Sorpresas, <span class="text-emerald-400">Cero Pérdidas</span></h2>
+      <p class="text-sm text-slate-400 max-w-lg mx-auto">Unimos la caja con el almacén para que cada centavo y producto sea rastreable en todo momento.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-5">
+      <!-- Métodos de Pago -->
+      <div class="gc p-5 border-t-4 border-amber-500 gc-a">
+        <div class="text-3xl mb-3">💳</div>
+        <h3 class="text-lg font-bold mb-2 text-amber-400">Métodos de Pago</h3>
+        <p class="text-xs text-slate-400 mb-4">Registra cómo pagó cada cliente. El cajero cuadra su caja eficientemente al cierre del turno.</p>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between p-2 bg-slate-800/60 rounded-lg"><span class="text-slate-300">💵 Efectivo</span><span class="text-emerald-400 font-bold">$680.000</span></div>
+          <div class="flex justify-between p-2 bg-slate-800/60 rounded-lg"><span class="text-slate-300">💳 Tarjeta</span><span class="text-emerald-400 font-bold">$425.000</span></div>
+          <div class="flex justify-between p-2 bg-slate-800/60 rounded-lg"><span class="text-slate-300">📲 Transferencia</span><span class="text-emerald-400 font-bold">$345.000</span></div>
+        </div>
+      </div>
+      <!-- Control de Caja -->
+      <div class="gc p-5 border-t-4 border-indigo-500">
+        <div class="text-3xl mb-3">🏦</div>
+        <h3 class="text-lg font-bold mb-2 text-indigo-400">Control de Caja</h3>
+        <ul class="space-y-2 text-slate-300 text-sm">
+          <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Pagos mixtos y digitales controlados</li>
+          <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Cortes automáticos al cierre de jornada</li>
+          <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Registro detallado de ingresos y egresos</li>
+          <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Historial de movimientos inalterable</li>
+          <li class="flex items-start gap-2"><span class="text-indigo-400">✓</span> Cuadre rápido y sin errores para el cajero</li>
+        </ul>
+      </div>
+      <!-- Inventario -->
+      <div class="gc p-5 border-t-4 border-emerald-500 gc-e">
+        <div class="text-3xl mb-3">📦</div>
+        <h3 class="text-lg font-bold mb-2 text-emerald-400">Inventario Estratégico</h3>
+        <p class="text-xs text-slate-400 mb-3">Control de stock en tiempo real ligado a cada venta.</p>
+        <ul class="space-y-2 text-slate-300 text-sm">
+          <li class="flex items-start gap-2"><span class="text-emerald-400">✓</span> Bloqueo de venta si no hay stock real</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-400">✓</span> Seguimiento de consumo por venta</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-400">✓</span> Gestión de Proveedores integrada</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-400">✓</span> Reducción drástica de mermas y robos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▸ SLIDE 9 · CONTACTO ◂ -->
+<div class="slide" data-state="after" data-label="Contacto">
+  <div class="absolute inset-0 bg-gradient-to-br from-amber-950/20 via-slate-950 to-indigo-950/20 -z-10"></div>
+  <div class="max-w-3xl mx-auto text-center w-full">
+    <h2 class="text-4xl font-extrabold mb-5 text-amber-400 italic">"Transformamos empresas,<br>no solo procesos"</h2>
+    <div class="gc p-8 relative overflow-hidden gc-a">
+      <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-amber-500 via-amber-400 to-amber-600"></div>
+      <h3 class="text-2xl font-extrabold mb-4 text-white">Permítanos mostrarle cómo tener el <span class="text-emerald-400 underline decoration-2 underline-offset-4">control total</span> desde hoy mismo.</h3>
+      <div class="space-y-3 mb-6">
+        <p class="text-xl font-bold text-white">Walter Restrepo López</p>
+        <div class="flex items-center justify-center gap-2 text-amber-400 font-semibold">
+          <span>✉️</span>
+          <a href="mailto:ey.lunia@hotmail.com" class="hover:text-amber-300 transition-colors">ey.lunia@hotmail.com</a>
+        </div>
+        <div class="flex items-center justify-center gap-2 text-slate-400">
+          <span>📍</span><span>Cali, Valle del Cauca, Colombia</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto text-center mb-6">
+        <div><div class="text-2xl font-extrabold text-amber-400">20+</div><div class="text-slate-500 text-xs">Funcionalidades</div></div>
+        <div><div class="text-2xl font-extrabold text-emerald-400">100%</div><div class="text-slate-500 text-xs">Trazabilidad</div></div>
+        <div><div class="text-2xl font-extrabold text-indigo-400">∞</div><div class="text-slate-500 text-xs">Actualizaciones</div></div>
+      </div>
+      <p class="text-slate-400 max-w-md mx-auto text-sm">POS-LunIA no es un gasto. Es la decisión que separa los negocios que sobreviven de los que prosperan.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pres -->
+
+<!-- ══ NAV BARRA INFERIOR ══ -->
+<div id="nav-bar">
+  <button id="nav-prev" onclick="presMove(-1)">‹</button>
+  <div id="nav-dots"></div>
+  <button id="nav-next" onclick="presMove(1)">›</button>
+  <span id="nav-counter"></span>
+</div>
+
+<!-- ══ DOTS LATERALES ══ -->
+<div id="side-dots"></div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('#pres .slide'));
+  const total  = slides.length;
+  let cur = 0;
+
+  // Build dots
+  const dotsCon = document.getElementById('nav-dots');
+  const sideCon = document.getElementById('side-dots');
+  slides.forEach((s,i) => {
+    const d = document.createElement('button');
+    d.className = 'ndot'; d.onclick = ()=>goTo(i);
+    dotsCon.appendChild(d);
+    const sd = document.createElement('button');
+    sd.className = 'sdot-side'; sd.title = s.dataset.label||''; sd.onclick = ()=>goTo(i);
+    sideCon.appendChild(sd);
+  });
+
+  function render(){
+    slides.forEach((s,i)=>{
+      s.dataset.state = i < cur ? 'before' : i === cur ? 'active' : 'after';
+    });
+    dotsCon.querySelectorAll('.ndot').forEach((d,i)=>d.classList.toggle('on', i===cur));
+    sideCon.querySelectorAll('.sdot-side').forEach((d,i)=>d.classList.toggle('on', i===cur));
+    document.getElementById('nav-counter').textContent = (cur+1)+' / '+total;
+    document.getElementById('nav-prev').disabled = cur===0;
+    document.getElementById('nav-next').disabled = cur===total-1;
+
+    // Init chart when its slide becomes active
+    if(cur === 6 && !window._chartDone){
+      window._chartDone = true;
+      setTimeout(initChart, 80);
+    }
+  }
+
+  window.presMove = function(d){ goTo(Math.max(0, Math.min(total-1, cur+d))); };
+  function goTo(n){ cur=n; render(); }
+
+  // Keyboard
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown') presMove(1);
+    if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   presMove(-1);
+  });
+
+  // Touch swipe
+  let tx=0;
+  document.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend',   e=>{
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx)>50) presMove(dx<0?1:-1);
+  });
+
+  render();
+
+  function initChart(){
+    const ctx = document.getElementById('econChart');
+    if(!ctx) return;
+    new Chart(ctx.getContext('2d'), {
+      type:'line',
+      data:{
+        labels:['Ene','Feb','Mar','Abr','May','Jun'],
+        datasets:[
+          {label:'Este Año',    data:[3.2,3.8,3.5,4.1,4.6,4.9], borderColor:'#10B981', backgroundColor:'rgba(16,185,129,.12)', tension:.4, fill:true, pointBackgroundColor:'#10B981'},
+          {label:'Año Anterior',data:[2.8,2.9,3.1,2.7,3.2,3.5], borderColor:'#6366F1', backgroundColor:'rgba(99,102,241,.05)',  tension:.4, fill:false, borderDash:[5,5], pointBackgroundColor:'#6366F1'}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#F1F5F9',font:{size:10}}}},
+        scales:{
+          y:{beginAtZero:false, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#94A3B8',font:{size:9},callback:v=>'$'+v+'M'}},
+          x:{grid:{display:false}, ticks:{color:'#94A3B8',font:{size:9}}}
+        }
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
